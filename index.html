@@ -9,20 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        @keyframes move-bg {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         html,
         body {
             width: 100%;
@@ -34,13 +20,16 @@
         }
 
         body {
+            /* --- CHANGE HERE --- */
+            /* Removed the animated space background and set it to transparent */
+            background: transparent;
+            /* --- END CHANGE --- */
+
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0f172a);
-            background-size: 400% 400%;
-            animation: move-bg 30s ease infinite;
             color: #e2e8f0;
+            /* Kept light text color, assuming it will be placed on a dark background */
         }
 
         .container {
