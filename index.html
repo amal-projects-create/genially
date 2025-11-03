@@ -1,258 +1,235 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mnemonic Planet Order</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --glow-color: #5d9bff;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Planet Order — Mnemonic Builder</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+    }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: transparent;
-    font-family: 'Poppins', sans-serif;
-    color: #e0e0e0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #eaf2ff;
+    }
 
-  .container {
-    width: 95%;
-    max-width: 550px;
-    margin: 1em auto;
-    padding: clamp(1em, 5vw, 2.5em);
-    background: rgba(25, 35, 50, 0.75);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    animation: softGlow 6s ease-in-out infinite alternate;
-  }
+    .container {
+      width: 95%;
+      max-width: 900px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      transform: scale(1);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
 
-  @keyframes softGlow {
-    0% { box-shadow: 0 0 12px rgba(93,155,255,0.4); }
-    100% { box-shadow: 0 0 25px rgba(93,155,255,0.7); }
-  }
+    @media (max-width: 600px) {
+      .container { transform: scale(0.9); }
+    }
 
-  h1 {
-    font-size: clamp(1.5rem, 5vw, 2.2rem);
-    color: #fff;
-    text-shadow: 0 0 8px var(--glow-color);
-    margin-top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: .3em;
-  }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #7dd3fc;
+    }
 
-  h1::before { content: '🚀'; }
-  h1::after { content: '🌟'; }
+    p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
 
-  p {
-    font-size: clamp(0.8rem, 2.5vw, 1rem);
-    margin-top: 0.5em;
-  }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
 
-  .planet-input-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-top: 20px;
-  }
+    .blank {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
 
-  .planet-input {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: transform 0.2s ease;
-  }
+    .blank:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.1); }
 
-  .planet-input:hover {
-    transform: scale(1.02);
-  }
+    input.word {
+      width: 90%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      text-align: center;
+      outline: none;
+      font-size: 0.95rem;
+      transition: background 0.3s ease;
+    }
 
-  .planet-name {
-    flex: 0 0 100px;
-    text-align: right;
-    margin-right: 10px;
-    font-weight: 600;
-    color: #a7d4fd;
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
-  }
+    input.word:focus {
+      background: rgba(255,255,255,0.25);
+    }
 
-  input[type="text"] {
-    flex: 1 1 auto;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.25);
-    border: 1px solid #4a5a70;
-    border-radius: 8px;
-    color: #fff;
-    font-size: clamp(0.9rem, 3vw, 1rem);
-    transition: all 0.3s ease;
-  }
+    .indicator {
+      margin-top: 6px;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
 
-  input[type="text"]::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-  }
+    .ok { background: rgba(16,185,129,0.2); color: #10b981; }
+    .bad { background: rgba(239,68,68,0.2); color: #ef4444; }
 
-  input[type="text"]:focus {
-    outline: none;
-    border-color: var(--glow-color);
-    box-shadow: 0 0 8px var(--glow-color);
-  }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
 
-  .indicator {
-    flex: 0 0 24px;
-    width: 24px;
-    height: 24px;
-    margin-left: 8px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-  }
+    button {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
 
-  .correct {
-    background-color: #28a745;
-    box-shadow: 0 0 10px #28a745;
-    animation: pulseGreen 0.8s ease;
-  }
-  
-  .wrong {
-    background-color: #dc3545;
-    box-shadow: 0 0 10px #dc3545;
-    animation: shake 0.4s ease;
-  }
+    .btn-check { background: linear-gradient(90deg, #38bdf8, #2563eb); color: #fff; }
+    .btn-reset, .btn-reveal { background: rgba(255,255,255,0.1); color: #cbd5e1; }
+    button:hover { transform: scale(1.05); }
 
-  @keyframes pulseGreen {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
+    .result {
+      margin-top: 16px;
+      font-size: 1rem;
+      color: #93c5fd;
+    }
 
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-  }
-
-  button {
-    padding: 12px 30px;
-    margin-top: 25px;
-    border: none;
-    background: linear-gradient(45deg, #007bff, #5d9bff);
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
-    font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(93, 155, 255, 0.6);
-  }
-
-  .correct::after, .wrong::after {
-    color: white;
-  }
-
-  .correct::after { content: '✔'; }
-  .wrong::after { content: '✖'; }
-
-  .decor {
-    font-size: 1.4rem;
-    display: inline-block;
-    animation: floaty 5s ease-in-out infinite alternate;
-    opacity: 0.9;
-  }
-
-  @keyframes floaty {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-6px); }
-  }
-</style>
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>Stellar Mnemonic Creator</h1>
-  <p>Forge your own cosmic sentence to remember the planets!</p>
+  <div class="container">
+    <h1>Create Your Planet Mnemonic</h1>
+    <p>Type one word per planet. The first letter must match each planet’s initial. Correct letters will glow green!</p>
 
-  <div class="planet-input-grid">
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">🪐</span> <b>M</b>ercury:</span> 
-      <input type="text" id="planet1" placeholder="My..."> 
-      <span id="indicator1" class="indicator"></span>
+    <div class="grid" id="blanks"></div>
+
+    <div class="buttons">
+      <button class="btn-check" id="checkBtn">Check</button>
+      <button class="btn-reveal" id="revealBtn">Reveal</button>
+      <button class="btn-reset" id="resetBtn">Reset</button>
     </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">☀️</span> <b>V</b>enus:</span> 
-      <input type="text" id="planet2" placeholder="Very..."> 
-      <span id="indicator2" class="indicator"></span>
-    </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">🌍</span> <b>E</b>arth:</span> 
-      <input type="text" id="planet3" placeholder="Excellent..."> 
-      <span id="indicator3" class="indicator"></span>
-    </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">🔥</span> <b>M</b>ars:</span> 
-      <input type="text" id="planet4" placeholder="Mother..."> 
-      <span id="indicator4" class="indicator"></span>
-    </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">🌪️</span> <b>J</b>upiter:</span> 
-      <input type="text" id="planet5" placeholder="Just..."> 
-      <span id="indicator5" class="indicator"></span>
-    </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">💫</span> <b>S</b>aturn:</span> 
-      <input type="text" id="planet6" placeholder="Served..."> 
-      <span id="indicator6" class="indicator"></span>
-    </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">🧊</span> <b>U</b>ranus:</span> 
-      <input type="text" id="planet7" placeholder="Us..."> 
-      <span id="indicator7" class="indicator"></span>
-    </div>
-    <div class="planet-input">
-      <span class="planet-name"><span class="decor">🌊</span> <b>N</b>eptune:</span> 
-      <input type="text" id="planet8" placeholder="Noodles..."> 
-      <span id="indicator8" class="indicator"></span>
-    </div>
+
+    <div id="result" class="result"></div>
   </div>
 
-  <button id="checkButton">Check My Mnemonic!</button>
-</div>
+  <script>
+    const PLANETS = [
+      {name:'Mercury', letter:'M'},
+      {name:'Venus', letter:'V'},
+      {name:'Earth', letter:'E'},
+      {name:'Mars', letter:'M'},
+      {name:'Jupiter', letter:'J'},
+      {name:'Saturn', letter:'S'},
+      {name:'Uranus', letter:'U'},
+      {name:'Neptune', letter:'N'}
+    ];
 
-<script>
-  function checkAnswers() {
-    const planets = ['M', 'V', 'E', 'M', 'J', 'S', 'U', 'N'];
-    for (let i = 0; i < planets.length; i++) {
-      const inputEl = document.getElementById('planet' + (i + 1));
-      const indicatorEl = document.getElementById('indicator' + (i + 1));
-      const value = inputEl.value.trim();
-      indicatorEl.className = 'indicator';
-      if (!value) continue;
-      if (value[0].toUpperCase() === planets[i]) {
-        indicatorEl.classList.add('correct');
-      } else {
-        indicatorEl.classList.add('wrong');
-      }
+    const blanks = document.getElementById('blanks');
+    const checkBtn = document.getElementById('checkBtn');
+    const revealBtn = document.getElementById('revealBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const result = document.getElementById('result');
+
+    PLANETS.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'blank';
+      div.innerHTML = `
+        <div>${p.letter}</div>
+        <input class="word" placeholder="Word ${i+1}" data-index="${i}">
+        <div class="indicator"></div>
+      `;
+      blanks.appendChild(div);
+    });
+
+    function normalize(str){
+      return str.trim().charAt(0).toUpperCase();
     }
-  }
-  document.getElementById('checkButton').addEventListener('click', checkAnswers);
-</script>
+
+    function check(){
+      let correct = 0;
+      const inputs = document.querySelectorAll('.word');
+      inputs.forEach((inp, i) => {
+        const first = normalize(inp.value);
+        const expected = PLANETS[i].letter;
+        const ind = inp.parentElement.querySelector('.indicator');
+        if (first === expected) {
+          ind.textContent = '✓';
+          ind.className = 'indicator ok';
+          correct++;
+        } else if (inp.value.trim() !== '') {
+          ind.textContent = '✕';
+          ind.className = 'indicator bad';
+        } else {
+          ind.textContent = '';
+          ind.className = 'indicator';
+        }
+      });
+      result.textContent = `${correct}/${PLANETS.length} correct`;
+    }
+
+    function reveal(){
+      const inputs = document.querySelectorAll('.word');
+      inputs.forEach((inp, i) => {
+        inp.value = PLANETS[i].name;
+        const ind = inp.parentElement.querySelector('.indicator');
+        ind.textContent = '✓';
+        ind.className = 'indicator ok';
+      });
+      result.textContent = 'All revealed!';
+    }
+
+    function reset(){
+      const inputs = document.querySelectorAll('.word');
+      inputs.forEach(inp => {
+        inp.value = '';
+        const ind = inp.parentElement.querySelector('.indicator');
+        ind.textContent = '';
+        ind.className = 'indicator';
+      });
+      result.textContent = '';
+    }
+
+    checkBtn.addEventListener('click', check);
+    revealBtn.addEventListener('click', reveal);
+    resetBtn.addEventListener('click', reset);
+  </script>
 </body>
 </html>
