@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Planet Order — Mnemonic Builder</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #eaf2ff;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 900px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      transform: scale(1);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+
+    @media (max-width: 600px) {
+      .container { transform: scale(0.9); }
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #7dd3fc;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .blank {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .blank:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.1); }
+
+    input.word {
+      width: 90%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      text-align: center;
+      outline: none;
+      font-size: 0.95rem;
+      transition: background 0.3s ease;
+    }
+
+    input.word:focus {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .indicator {
+      margin-top: 6px;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .ok { background: rgba(16,185,129,0.2); color: #10b981; }
+    .bad { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .btn-check { background: linear-gradient(90deg, #38bdf8, #2563eb); color: #fff; }
+    .btn-reset, .btn-reveal { background: rgba(255,255,255,0.1); color: #cbd5e1; }
+    button:hover { transform: scale(1.05); }
+
+    .result {
+      margin-top: 16px;
+      font-size: 1rem;
+      color: #93c5fd;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Create Your Planet Mnemonic</h1>
+    <p>Type one word per planet. The first letter must match each planet’s initial. Correct letters will glow green!</p>
+
+    <div class="grid" id="blanks"></div>
+
+    <div class="buttons">
+      <button class="btn-check" id="checkBtn">Check</button>
+      <button class="btn-reveal" id="revealBtn">Reveal</button>
+      <button class="btn-reset" id="resetBtn">Reset</button>
+    </div>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const PLANETS = [
+      {name:'Mercury', letter:'M'},
+      {name:'Venus', letter:'V'},
+      {name:'Earth', letter:'E'},
+      {name:'Mars', letter:'M'},
+      {name:'Jupiter', letter:'J'},
+      {name:'Saturn', letter:'S'},
+      {name:'Uranus', letter:'U'},
+      {name:'Neptune', letter:'N'}
+    ];
+
+    const blanks = document.getElementById('blanks');
+    const checkBtn = document.getElementById('checkBtn');
+    const revealBtn = document.getElementById('revealBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const result = document.getElementById('result');
+
+    PLANETS.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'blank';
+      div.innerHTML = `
+        <div>${p.letter}</div>
+        <input class="word" placeholder="Word ${i+1}" data-index="${i}">
+        <div class="indicator"></div>
+      `;
+      blanks.appendChild(div);
+    });
+
+    function normalize(str){
+      return str.trim().charAt(0).toUpperCase();
+    }
+
+    function check(){
+      let correct = 0;
+      const inputs = document.querySelectorAll('.word');
+      inputs.forEach((inp, i) => {
+        const first = normalize(inp.value);
+        const expected = PLANETS[i].letter;
+        const ind = inp.parentElement.querySelector('.indicator');
+        if (first === expected) {
+          ind.textContent = '✓';
+          ind.className = 'indicator ok';
+          correct++;
+        } else if (inp.value.trim() !== '') {
+          ind.textContent = '✕';
+          ind.className = 'indicator bad';
+        } else {
+          ind.textContent = '';
+          ind.className = 'indicator';
+        }
+      });
+      result.textContent = `${correct}/${PLANETS.length} correct`;
+    }
+
+    function reveal(){
+      const inputs = document.querySelectorAll('.word');
+      inputs.forEach((inp, i) => {
+        inp.value = PLANETS[i].name;
+        const ind = inp.parentElement.querySelector('.indicator');
+        ind.textContent = '✓';
+        ind.className = 'indicator ok';
+      });
+      result.textContent = 'All revealed!';
+    }
+
+    function reset(){
+      const inputs = document.querySelectorAll('.word');
+      inputs.forEach(inp => {
+        inp.value = '';
+        const ind = inp.parentElement.querySelector('.indicator');
+        ind.textContent = '';
+        ind.className = 'indicator';
+      });
+      result.textContent = '';
+    }
+
+    checkBtn.addEventListener('click', check);
+    revealBtn.addEventListener('click', reveal);
+    resetBtn.addEventListener('click', reset);
+  </script>
+</body>
+</html>
